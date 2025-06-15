@@ -1,40 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Sandbox.LLM;
 
+// Simple request/response models for OpenAI-compatible APIs
+internal class CompletionRequest
+{
+	public string model { get; set; }
+	public List<Message> messages { get; set; }
+	public double temperature { get; set; }
+	public int max_tokens { get; set; }
+	public double top_p { get; set; }
+}
+
+internal class CompletionResponse
+{
+	public List<Choice> choices { get; set; }
+	
+	public class Choice
+	{
+		public Message message { get; set; }
+	}
+}
+
 /// <summary>
-/// Client for interacting with Large Language Model APIs.
-/// Provides a clean interface for sending messages and receiving AI-generated responses.
-/// 
-/// This client is designed to work with OpenAI-compatible APIs (OpenRouter, OpenAI, etc.)
-/// and handles the HTTP communication, serialization, and error handling.
-/// 
-/// Example usage:
-/// <code>
-/// var client = new LLMClient();
-/// var response = await client.CompleteAsync("Hello, how are you?");
-/// </code>
+/// Minimal LLM client for sending messages to OpenAI-compatible APIs
 /// </summary>
 public class LLMClient
 {
 	private readonly LLMConfig _config;
 	
-	/// <summary>
-	/// Event fired before a request is sent to the API
-	/// </summary>
-	public event Action<List<Message>> BeforeRequest;
-	
-	/// <summary>
-	/// Event fired after a response is received from the API
-	/// </summary>
-	public event Action<string> AfterResponse;
-	
-	/// <summary>
-	/// Event fired when an error occurs during API communication
-	/// </summary>
-	public event Action<Exception> OnError;
 	
 	/// <summary>
 	/// Creates a new LLM client with default configuration
@@ -66,7 +63,6 @@ public class LLMClient
 			throw new ArgumentException( "Messages cannot be null or empty", nameof(messages) );
 		}
 		
-		BeforeRequest?.Invoke( messages );
 		
 		var headers = new Dictionary<string, string>
 		{
@@ -79,8 +75,8 @@ public class LLMClient
 			model = _config.Model,
 			messages = messages,
 			temperature = _config.Temperature,
-			max_tokens = _config.MaxTokens,
-			top_p = _config.TopP
+			max_tokens = _config.MaxTokens ?? 1000,
+			top_p = _config.TopP ?? 1.0
 		};
 		
 		try
@@ -98,16 +94,12 @@ public class LLMClient
 				return string.Empty;
 			}
 			
-			var content = response.choices[0].message.Content;
-			AfterResponse?.Invoke( content );
-			
-			return content;
+			return response.choices[0].message.Content;
 		}
 		catch ( Exception ex )
 		{
 			Log.Error( $"LLMClient: Error during API call - {ex.Message}" );
-			OnError?.Invoke( ex );
-			throw new Exception( "Failed to get response from LLM", ex );
+			throw;
 		}
 	}
 	
@@ -131,67 +123,4 @@ public class LLMClient
 		return await CompleteAsync( messages );
 	}
 	
-	/// <summary>
-	/// Estimates the number of tokens in a text (rough approximation)
-	/// </summary>
-	/// <param name="text">The text to estimate</param>
-	/// <returns>Approximate token count</returns>
-	public static int EstimateTokens( string text )
-	{
-		if ( string.IsNullOrEmpty( text ) ) return 0;
-		
-		// Rough estimate: ~4 characters per token for English text
-		// For more accurate estimation, consider using a proper tokenizer
-		return (int)Math.Ceiling( text.Length / 4.0 );
-	}
-	
-	/// <summary>
-	/// Estimates the total token count for a list of messages
-	/// </summary>
-	/// <param name="messages">Messages to count tokens for</param>
-	/// <returns>Total approximate token count</returns>
-	public static int EstimateTokens( List<Message> messages )
-	{
-		var totalTokens = 0;
-		foreach ( var message in messages )
-		{
-			// Add role tokens (typically 1-2 tokens)
-			totalTokens += 2;
-			// Add content tokens
-			totalTokens += EstimateTokens( message.Content );
-		}
-		return totalTokens;
-	}
-	
-	/// <summary>
-	/// Validates if the messages list will fit within token limits
-	/// </summary>
-	/// <param name="messages">Messages to validate</param>
-	/// <param name="maxTokens">Maximum allowed tokens (default: 4096)</param>
-	/// <returns>True if within limits, false otherwise</returns>
-	public static bool ValidateTokenLimit( List<Message> messages, int maxTokens = 4096 )
-	{
-		return EstimateTokens( messages ) <= maxTokens;
-	}
-	
-	/// <summary>
-	/// Creates a new client with a different model while keeping other settings
-	/// </summary>
-	/// <param name="model">The model to use</param>
-	/// <returns>A new LLMClient instance</returns>
-	public LLMClient WithModel( string model )
-	{
-		var newConfig = new LLMConfig
-		{
-			Model = model,
-			Temperature = _config.Temperature,
-			MaxTokens = _config.MaxTokens,
-			TopP = _config.TopP,
-			ApiUrl = _config.ApiUrl,
-			ApiKey = _config.ApiKey,
-			TimeoutMs = _config.TimeoutMs
-		};
-		
-		return new LLMClient( newConfig );
-	}
 }
