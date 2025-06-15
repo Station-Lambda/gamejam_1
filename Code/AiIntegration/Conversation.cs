@@ -3,62 +3,96 @@ using System.Threading.Tasks;
 
 namespace Sandbox.AiIntegration;
 
+/// <summary>
+/// Manages multiple AI conversations with multiple identifiers
+/// </summary>
 public class Conversation
 {
-	public event Action<string> OnConversationUpdate;
+	/// <summary>
+	/// Event fired when any conversation updates
+	/// </summary>
+	public event Action<string> ConversationUpdated;
 	
 	
 	private Dictionary<string, List<Message>> _conversations = new();
 	private HttpBrain _httpBrain = new();
 
 
-	public void StartConversation(string identifier,string context)
+	/// <summary>
+	/// Starts a new conversation with system context
+	/// </summary>
+	public void StartConversation( string identifier, string context )
 	{
-		List<Message> contextBase = new();
-		contextBase.Add(new Message()
+		var contextBase = new List<Message>
 		{
-			Role = "system",
-			Content = context
-		});
-		
-		_conversations.Add( identifier, contextBase);
-		OnConversationUpdate?.Invoke(identifier);
+			new()
+			{
+				Role = "system",
+				Content = context
+			}
+		};
+
+		_conversations.Add( identifier, contextBase );
+		ConversationUpdated?.Invoke(identifier);
 	}
 
+	/// <summary>
+	/// Adds a message to conversation and gets AI response
+	/// </summary>
 	public async Task<Message> AddMessage( string identifier, Message message )
 	{
-		_conversations[identifier].Add(message);
-		OnConversationUpdate?.Invoke(identifier);
-		var response = await _httpBrain.RequestToIa( _conversations[identifier] );
+		if ( !_conversations.TryGetValue( identifier, out var conversation ) )
+			return default;
+		
+		conversation.Add( message );
+		ConversationUpdated?.Invoke( identifier );
+		
+		var response = await _httpBrain.RequestToIa( conversation );
 		var messageResponse = new Message()
 		{
 			Role = "assistant",
 			Content = response
 		};
-		_conversations[identifier].Add(messageResponse);
-		OnConversationUpdate?.Invoke(identifier);
+		
+		conversation.Add( messageResponse );
+		ConversationUpdated?.Invoke(identifier);
+		
 		return messageResponse;
 	}
 
+	/// <summary>
+	/// Checks if conversation exists
+	/// </summary>
 	public bool HasConversations(string identifier)
 	{
 		return _conversations.ContainsKey(identifier);
 	}
 
+	/// <summary>
+	/// Gets all messages for a conversation
+	/// </summary>
 	public List<Message> ListMessages(string identifier)
 	{
-		return _conversations[identifier];
+		return _conversations.TryGetValue( identifier, out var messages ) ? messages : new List<Message>();
 	}
 
+	/// <summary>
+	/// Gets all conversation identifiers
+	/// </summary>
 	public List<string> ListConversations()
 	{
 		return _conversations.Keys.ToList();
 	}
 	
+	/// <summary>
+	/// Closes a conversation and returns a summary of the conversation.
+	/// </summary>
 	public async Task<string> CloseAndSummarizeConversation(string identifier)
 	{
 		var conversation = _conversations[identifier];
 		_conversations.Remove(identifier);
+		ConversationUpdated?.Invoke(identifier);
+		
 		conversation.Add(new Message()
 		{
 			Role = "system", 
