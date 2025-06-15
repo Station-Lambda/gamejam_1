@@ -612,6 +612,8 @@
           "__type": "Sandbox.AiCharacter",
           "__guid": "747a26f1-6411-4994-92eb-5c3d1e4520d5",
           "__enabled": true,
+          "MaxWaitTime": 5,
+          "MinWaitTime": 1,
           "MoveSpeed": 100,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -681,6 +683,22 @@
               },
               "Tint": "1,1,1,1",
               "UseAnimGraph": true
+            },
+            {
+              "__type": "Sandbox.NpcProfile",
+              "__guid": "93023704-4262-416a-87c0-ccb62a002d3e",
+              "__enabled": true,
+              "CurrentEmotion": "",
+              "Gender": "Male",
+              "Memory": [],
+              "Name": "",
+              "OnComponentDestroy": null,
+              "OnComponentDisabled": null,
+              "OnComponentEnabled": null,
+              "OnComponentFixedUpdate": null,
+              "OnComponentStart": null,
+              "OnComponentUpdate": null,
+              "Traits": []
             }
           ],
           "Children": []
