@@ -1,4 +1,6 @@
-﻿namespace Sandbox.AiIntegration;
+﻿using System;
+
+namespace Sandbox.AiIntegration;
 
 public class Character : Component
 {
@@ -13,6 +15,8 @@ public class Character : Component
 	
 	[Property] public string NewMessage { get; set; }
 	[Property] public bool SendMessage { get; set; }
+	
+	public event Action<string> OnConversationUpdate;
 
 	public string GetContext()
 	{
@@ -34,9 +38,15 @@ public class Character : Component
 		        """;
 	}
 
+	public void StartConversation(string identifier)
+	{
+		_conversation.StartConversation(identifier, GetContext());
+	}
+
 	protected override void OnStart()
 	{
-		_conversation.StartConversation("test", GetContext());
+		// _conversation.StartConversation("test", GetContext());
+		_conversation.OnConversationUpdate += OnConversationUpdate;
 	}
 
 	protected override void OnUpdate()
