@@ -447,7 +447,12 @@
           "__guid": "9c2b597b-6e3e-48b6-b55d-56150ba43ce5",
           "__enabled": true,
           "ApplyHeightScale": true,
-          "BodyTarget": null,
+          "BodyTarget": {
+            "_type": "component",
+            "component_id": "c6413afa-b8c0-4146-967c-0519a0d3215d",
+            "go": "d5df9074-a7d0-440f-926a-ec2ff3840890",
+            "component_type": "SkinnedModelRenderer"
+          },
           "Clothing": [],
           "ManualAge": 0.5,
           "ManualHeight": 0.5,
@@ -487,7 +492,7 @@
               "BoneMergeTarget": null,
               "CreateAttachments": false,
               "CreateBoneObjects": false,
-              "MaterialGroup": null,
+              "MaterialGroup": "default",
               "MaterialOverride": null,
               "Model": "models/citizen/citizen.vmdl",
               "Morphs": {},
