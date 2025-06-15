@@ -26,9 +26,7 @@ public class AiCharacter : Component
 		// Afficher le debug si activé
 		if ( ShowDebug && _context.LastExecutedNode != null )
 		{
-			Log.Info( "Debug" );
 			var debugText = $"{_context.CurrentPath}\nStatus: {_context.LastNodeStatus}";
-			Log.Info( debugText );
 			var tr = Transform.World;
 			tr.Position += Vector3.Up * 100;
 			tr.Rotation = tr.Rotation.RotateAroundAxis( Vector3.Forward, 90 );
