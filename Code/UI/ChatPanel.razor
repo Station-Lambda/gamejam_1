@@ -1,0 +1,162 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root class="@(IsVisible ? "visible" : "hidden")">
+	<div class="chat-overlay" @onclick=@CloseChat></div>
+	<div class="chat-window">
+		<div class="chat-header">
+			<h3 class="npc-name">@NpcName</h3>
+			<button class="close-button" @onclick=@CloseChat>×</button>
+		</div>
+		<div class="chat-content">
+			<div class="chat-messages">
+				@foreach (var message in Messages)
+				{
+					<div class="message @(message.IsPlayer ? "player" : "npc")">
+						<span class="text">@message.Text</span>
+					</div>
+				}
+			</div>
+			<div class="chat-options">
+				@foreach (var option in CurrentOptions)
+				{
+					<button class="dialog-option" @onclick=@(() => SelectOption(option))>
+						@option.Text
+					</button>
+				}
+			</div>
+		</div>
+	</div>
+</root>
+
+@code
+{
+	[Property] public string NpcName { get; set; } = "NPC";
+	[Property] public bool IsVisible { get; set; } = false;
+	
+	public List<ChatMessage> Messages { get; set; } = new();
+	public List<DialogOption> CurrentOptions { get; set; } = new();
+	
+	private NpcProfile currentNpc;
+	
+	public class ChatMessage
+	{
+		public string Text { get; set; }
+		public bool IsPlayer { get; set; }
+	}
+	
+	public class DialogOption
+	{
+		public string Text { get; set; }
+		public System.Action OnSelect { get; set; }
+	}
+	
+	public void Initialize(NpcProfile npc)
+	{
+		currentNpc = npc;
+		NpcName = npc?.Name ?? "Unknown";
+		Messages.Clear();
+		
+		var greeting = "Bonjour! Comment puis-je vous aider?";
+		Messages.Add(new ChatMessage 
+		{ 
+			Text = greeting, 
+			IsPlayer = false 
+		});
+		
+		if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
+		{
+			ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), greeting, false );
+		}
+		
+		UpdateOptions();
+	}
+	
+	public void OpenChat(NpcProfile npc)
+	{
+		Initialize(npc);
+		IsVisible = true;
+	}
+	
+	public void CloseChat()
+	{
+		IsVisible = false;
+	}
+	
+	public void Toggle()
+	{
+		IsVisible = !IsVisible;
+	}
+	
+	private void SelectOption(DialogOption option)
+	{
+		Messages.Add(new ChatMessage 
+		{ 
+			Text = option.Text, 
+			IsPlayer = true 
+		});
+		
+		if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
+		{
+			ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), option.Text, true );
+		}
+		
+		option.OnSelect?.Invoke();
+		
+		UpdateOptions();
+	}
+	
+	private void UpdateOptions()
+	{
+		CurrentOptions.Clear();
+		
+		CurrentOptions.Add(new DialogOption
+		{
+			Text = "Qui êtes-vous?",
+			OnSelect = () =>
+			{
+				var response = $"Je suis {NpcName}. Je vis dans cette ville depuis longtemps.";
+				Messages.Add(new ChatMessage
+				{
+					Text = response,
+					IsPlayer = false
+				});
+				
+				if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
+				{
+					ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), response, false );
+				}
+			}
+		});
+		
+		CurrentOptions.Add(new DialogOption
+		{
+			Text = "Que savez-vous sur le culte?",
+			OnSelect = () =>
+			{
+				var response = "Le culte? Je... je ne sais pas de quoi vous parlez.";
+				Messages.Add(new ChatMessage
+				{
+					Text = response,
+					IsPlayer = false
+				});
+				
+				if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
+				{
+					ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), response, false );
+				}
+			}
+		});
+		
+		CurrentOptions.Add(new DialogOption
+		{
+			Text = "Au revoir",
+			OnSelect = () => CloseChat()
+		});
+	}
+	
+	protected override int BuildHash() 
+		=> System.HashCode.Combine(IsVisible, Messages.Count, CurrentOptions.Count);
+}

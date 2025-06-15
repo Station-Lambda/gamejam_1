@@ -294,7 +294,7 @@
       "Position": "-188.4269,-37.49765,1.954742",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
-      "Tags": "",
+      "Tags": "player",
       "Enabled": true,
       "NetworkMode": 2,
       "NetworkInterpolation": true,
@@ -592,6 +592,29 @@
           "Children": []
         }
       ]
+    },
+    {
+      "__guid": "8f7a2e4b-6c3d-4a5e-9b2f-1d8c7e5f3a9b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "ChatManager",
+      "Position": "0,0,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "ChatManager",
+          "__guid": "3e5b7f9a-2d4c-8e6f-1a7b-9c3d5e8f2a6b",
+          "__enabled": true
+        }
+      ],
+      "Children": []
     },
     {
       "__guid": "0e8d9171-4837-47ce-a1a2-fdbbccceaada",
