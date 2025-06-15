@@ -17,13 +17,11 @@ public class SelectorNode : CompositeNode
 		context.LastExecutedNode = this;
 		context.CurrentPath = "SelectorNode";
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SelectorNode: Starting from child {_currentChild}/{Children.Count}" );
 		context.CurrentDepth++;
 		
 		while ( _currentChild < Children.Count )
 		{
 			var status = Children[_currentChild].Execute( context );
-			Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SelectorNode: Child {_currentChild} returned {status}" );
 
 			switch ( status )
 			{
@@ -44,7 +42,6 @@ public class SelectorNode : CompositeNode
 			}
 		}
 
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SelectorNode: All children failed" );
 		Reset();
 		context.CurrentDepth--;
 		context.LastNodeStatus = NodeStatus.Failure;

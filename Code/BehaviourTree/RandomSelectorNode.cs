@@ -26,14 +26,12 @@ public class RandomSelectorNode : CompositeNode
 			_needsShuffle = false;
 		}
 
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RandomSelectorNode: Starting from index {_currentIndex}/{_shuffledIndices.Count}" );
 		context.CurrentDepth++;
 
 		while ( _currentIndex < _shuffledIndices.Count )
 		{
 			var childIndex = _shuffledIndices[_currentIndex];
 			var status = Children[childIndex].Execute( context );
-			Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RandomSelectorNode: Child {childIndex} returned {status}" );
 
 			switch ( status )
 			{
@@ -54,7 +52,6 @@ public class RandomSelectorNode : CompositeNode
 			}
 		}
 
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RandomSelectorNode: All children failed" );
 		ResetState();
 		context.CurrentDepth--;
 		context.LastNodeStatus = NodeStatus.Failure;

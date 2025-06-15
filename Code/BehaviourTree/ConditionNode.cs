@@ -21,7 +21,6 @@ public class ConditionNode( Func<bool> condition ) : Node
 		var status = result ? NodeStatus.Success : NodeStatus.Failure;
 		context.LastNodeStatus = status;
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ConditionNode: {result} -> {status}" );
 		return status;
 	}
 }

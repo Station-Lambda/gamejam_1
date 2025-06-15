@@ -17,13 +17,11 @@ public class SequenceNode : CompositeNode
 		context.LastExecutedNode = this;
 		context.CurrentPath = "SequenceNode";
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SequenceNode: Starting from child {_currentChild}/{Children.Count}" );
 		context.CurrentDepth++;
 		
 		while ( _currentChild < Children.Count )
 		{
 			var status = Children[_currentChild].Execute( context );
-			Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SequenceNode: Child {_currentChild} returned {status}" );
 
 			switch ( status )
 			{
@@ -44,7 +42,6 @@ public class SequenceNode : CompositeNode
 			}
 		}
 
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SequenceNode: All children succeeded" );
 		Reset();
 		context.CurrentDepth--;
 		context.LastNodeStatus = NodeStatus.Success;

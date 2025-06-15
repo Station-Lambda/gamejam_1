@@ -20,7 +20,6 @@ public class ActionNode( Func<NodeStatus> action ) : Node
 		var status = action();
 		context.LastNodeStatus = status;
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ActionNode: {status}" );
 		return status;
 	}
 }
