@@ -3,7 +3,7 @@ using Sandbox.BehaviourTree;
 
 namespace Sandbox;
 
-public class AiCharacter : Component
+public class NpcBehaviour : Component
 {
 	[Property] public bool ShowDebug { get; set; } = true;
 	[Property] public float PatrolRadius { get; set; } = 500f;

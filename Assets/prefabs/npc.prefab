@@ -15,7 +15,7 @@
     "OwnerTransfer": 1,
     "Components": [
       {
-        "__type": "Sandbox.AiCharacter",
+        "__type": "Sandbox.NpcBehaviour",
         "__guid": "126843f0-558a-40f0-be93-82962030f41f",
         "__enabled": true,
         "MaxWaitTime": 5,
