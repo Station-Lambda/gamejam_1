@@ -4,13 +4,13 @@ namespace Sandbox;
 
 public class AiCharacter : Component
 {
-	private Node _behaviourTree;
-	private BehaviourTreeContext _context;
-	
 	/// <summary>
 	/// Affiche le debug du behaviour tree au-dessus du personnage.
 	/// </summary>
 	[Property] public bool ShowDebug { get; set; } = true;
+	
+	private Node _behaviourTree;
+	private BehaviourTreeContext _context;
 
 	protected override void OnStart()
 	{
@@ -26,15 +26,28 @@ public class AiCharacter : Component
 		// Afficher le debug si activé
 		if ( ShowDebug && _context.LastExecutedNode != null )
 		{
+			Log.Info( "Debug" );
 			var debugText = $"{_context.CurrentPath}\nStatus: {_context.LastNodeStatus}";
-			Gizmo.Draw.ScreenText( debugText, WorldPosition + Vector3.Up * 100, "Consolas", 12, TextFlag.Center );
+			Log.Info( debugText );
+			var tr = Transform.World;
+			tr.Position += Vector3.Up * 50;
+			tr.Rotation = tr.Rotation.RotateAroundAxis( Vector3.Forward, 90 );
+			Gizmo.Draw.WorldText( debugText, tr );
 		}
 	}
 	
-	private static Node BuildBehaviourTree()
+	private Node BuildBehaviourTree()
 	{
 		var root = new SelectorNode();
         
+		root.AddChild( new ActionNode(BaseAction));
+		
 		return root;
+	}
+
+	private NodeStatus BaseAction()
+	{
+		Log.Info( "Ok" );
+		return NodeStatus.Success;
 	}
 }
