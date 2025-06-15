@@ -44,4 +44,9 @@ public class Conversation
 	{
 		return _conversations[identifier];
 	}
+
+	public List<string> ListConversations()
+	{
+		return _conversations.Keys.ToList();
+	}
 }
