@@ -2,23 +2,62 @@
 
 namespace Sandbox.AiIntegration;
 
-public class Character : Component
+/// <summary>
+/// Component that manages AI-powered character conversations and personality
+/// </summary>
+public sealed class Character : Component
 {
-	private Conversation _conversation = new Conversation();
+	private readonly Conversation _conversation = new();
+
+	/// <summary>
+	/// Character's name displayed in conversations
+	/// </summary>
+	[Property] public string Name { get; set; }
+
+	/// <summary>
+	/// World context and situation the character exists in
+	/// </summary>
+	[Property] public string Context { get; set; }
+
+	/// <summary>
+	/// Personality traits, beliefs, fears and motivations
+	/// </summary>
+	[Property] public string Personality { get; set; }
+
+	/// <summary>
+	/// Character's objective in interactions
+	/// </summary>
+	[Property] public string Goal { get; set; }
+
+	/// <summary>
+	/// Language style (formal/casual, serious/ironic, etc.)
+	/// </summary>
+	[Property] public string LanguageStyle { get; set; }
+
+	/// <summary>
+	/// Restrictions on what the character cannot do or say
+	/// </summary>
+	[Property] public string Restriction { get; set; }
 	
-	[Property] public string Name { get; set; } // [Nom du personnage]
-	[Property] public string Context { get; set; } // [Brève description du monde ou de la situation dans laquelle il/elle évolue]
-	[Property] public string Personality { get; set; } // [Traits dominants, manière de parler, attitude, croyances, peurs, motivations]
-	[Property] public string Goal { get; set; } // [Ce que le personnage veut accomplir dans cette interaction]
-	[Property] public string LanguageStyle { get; set; } // [Langage familier/soutenu, ironique/sérieux, rapide/lent, etc.]
-	[Property] public string Restriction { get; set; } // [Ce que le personnage ne doit pas faire ou dire]
-	
+	/// <summary>
+	/// Debug property for testing new messages in editor
+	/// </summary>
 	[Property] public string NewMessage { get; set; }
+
+	/// <summary>
+	/// Debug trigger to send test messages
+	/// </summary>
 	[Property] public bool SendMessage { get; set; }
-	
+
+	/// <summary>
+	/// Event fired when conversation updates with conversation identifier
+	/// </summary>
 	public event Action<string> OnConversationUpdate;
 
-	public string GetContext()
+	/// <summary>
+	/// Builds the AI context prompt from character properties
+	/// </summary>
+	private string GetContext()
 	{
 		return $"""
 		        Agis comme un personnage fictif. Voici les instructions :
@@ -38,25 +77,29 @@ public class Character : Component
 		        """;
 	}
 
-	public void StartConversation(string identifier)
+	/// <summary>
+	/// Starts a new conversation with given identifier
+	/// </summary>
+	public void StartConversation( string identifier )
 	{
-		_conversation.StartConversation(identifier, GetContext());
+		_conversation.StartConversation( identifier, GetContext() );
 	}
 
 	protected override void OnStart()
 	{
-		// _conversation.StartConversation("test", GetContext());
 		_conversation.OnConversationUpdate += OnConversationUpdate;
 	}
 
 	protected override void OnUpdate()
 	{
-		if ( SendMessage )
-		{
-			SendMessage = false;
-			if ( _conversation.HasConversations("test"))
-				_conversation.AddMessage( "test", new Message() { Role = "user", Content = NewMessage } );
-		}
+		if ( !SendMessage )
+			return;
+
+		SendMessage = false;
+
+		if ( !_conversation.HasConversations( "test" ) )
+			return;
+
+		_ = _conversation.AddMessage( "test", new Message { Role = "user", Content = NewMessage } );
 	}
 }
-	
