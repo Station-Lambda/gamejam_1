@@ -43,6 +43,11 @@ public class Character : Component
 		_conversation.StartConversation(identifier, GetContext());
 	}
 
+	public List<string> GetConversation( List<string> identifiers )
+	{
+		return _conversation.ListConversations();
+	}
+	
 	protected override void OnStart()
 	{
 		// _conversation.StartConversation("test", GetContext());

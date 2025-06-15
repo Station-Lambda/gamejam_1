@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Sandbox.AiIntegration;
 
 namespace Sandbox;
 
@@ -22,6 +23,8 @@ public sealed class NpcProfile : Component
 	
 	[Property] public string CurrentEmotion { get; set; } = "";
 	
+	private Conversation _conversation = new Conversation();
+	
 	protected override void OnStart()
 	{
 		base.OnStart();
@@ -31,6 +34,21 @@ public sealed class NpcProfile : Component
 			NpcGenerator.GenerateProfile( this );
 		}
 	}
+	
+	[Property] public string Context => 
+		$"""
+         Agis comme un personnage fictif. Voici les instructions :
+
+         Nom du personnage : '{Name}'
+
+         Genre du personnage : '{Gender}'
+
+         Liste des traits de personnalité du personnage : '{string.Join(", ", Traits)}'
+
+         Liste des événements important pour le personnage : '{string.Join(", ", Memory)}'
+
+         Son émotion sur le moment : '{CurrentEmotion}'
+         """;
 	
 	public override string ToString()
 	{
