@@ -4,8 +4,8 @@ namespace Sandbox.AiIntegration;
 
 public class Conversation
 {
-	private Dictionary<string, List<Message>> conversations = new();
-	private HttpBrain httpBrain = new();
+	private Dictionary<string, List<Message>> _conversations = new();
+	private HttpBrain _httpBrain = new();
 
 
 	public void StartConversation(string identifier,string context)
@@ -13,35 +13,35 @@ public class Conversation
 		List<Message> contextBase = new();
 		contextBase.Add(new Message()
 		{
-			role = "system",
-			content = context
+			Role = "system",
+			Content = context
 		});
 		
-		conversations.Add( identifier, contextBase);
+		_conversations.Add( identifier, contextBase);
 		Log.Info(identifier + " initialized");
 	}
 
 	public async Task<Message> AddMessage( string identifier, Message message )
 	{
-		Log.Info("Sending message: " + message.content);
-		conversations[identifier].Add(message);
-		var response = await httpBrain.RequestToIa( conversations[identifier] );
+		Log.Info("Sending message: " + message.Content);
+		_conversations[identifier].Add(message);
+		var response = await _httpBrain.RequestToIa( _conversations[identifier] );
 		var messageResponse = new Message()
 		{
-			role = "assistant",
-			content = response
+			Role = "assistant",
+			Content = response
 		};
-		conversations[identifier].Add(messageResponse);
+		_conversations[identifier].Add(messageResponse);
 		return messageResponse;
 	}
 
 	public bool HasConversations(string identifier)
 	{
-		return conversations.ContainsKey(identifier);
+		return _conversations.ContainsKey(identifier);
 	}
 
 	public List<Message> ListMessages(string identifier)
 	{
-		return conversations[identifier];
+		return _conversations[identifier];
 	}
 }

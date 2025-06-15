@@ -45,7 +45,7 @@ public class Character : Component
 		{
 			SendMessage = false;
 			if ( _conversation.HasConversations("test"))
-				_conversation.AddMessage( "test", new Message() { role = "user", content = NewMessage } );
+				_conversation.AddMessage( "test", new Message() { Role = "user", Content = NewMessage } );
 		}
 	}
 }

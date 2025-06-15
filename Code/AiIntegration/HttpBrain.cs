@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Sandbox;
@@ -7,13 +8,14 @@ namespace Sandbox.AiIntegration;
 
 public struct Message
 {
-	public string role { get; set; }
-	public string content { get; set; }
+	public string Role { get; set; }
+	public string Content { get; set; }
 	
 	// refusal: null,
 	// reasoning: null
 }
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public struct Choice
 {
 	// logprobs: null,
@@ -43,7 +45,7 @@ public struct HttpResponse
 
 public class HttpBrain
 {
-	const string API_KEY = "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";
+	private const string API_KEY = "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";
 
 	public async Task<string> RequestToIa(List<Message> messages )
 	{
@@ -59,8 +61,8 @@ public class HttpBrain
 		var choice =  response.Choices[0];
 		var message = choice.Message;
 		
-		Log.Info(" Message : " + message.content);
+		Log.Info(" Message : " + message.Content);
 		
-		return message.content;
+		return message.Content;
 	}
 }
