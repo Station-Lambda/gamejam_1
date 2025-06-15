@@ -51,7 +51,7 @@ public class Character : Component
 	protected override void OnStart()
 	{
 		// _conversation.StartConversation("test", GetContext());
-		_conversation.OnConversationUpdate += OnConversationUpdate;
+		//_conversation.OnConversationUpdate += OnConversationUpdate;
 	}
 
 	protected override void OnUpdate()
