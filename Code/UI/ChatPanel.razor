@@ -3,181 +3,116 @@
 @inherits PanelComponent
 @namespace Sandbox
 
-<root class="@(IsVisible ? "open" : "")">
+<root class="@(IsOpen ? "open" : "")">
 	<div class="chat-container">
-		<div class="chat-header">
-			<div class="npc-info">
-				<span class="chat-label">Conversation avec</span>
-				<h3 class="npc-name">@NpcName</h3>
-			</div>
-			<button class="close-button" @onclick=@CloseChat>
-				<span>ESC</span>
-			</button>
-		</div>
-		<div class="chat-body">
-			<div class="messages-container">
-				@foreach (var message in Messages)
-				{
-					<div class="message-entry @(message.IsPlayer ? "player" : "npc")">
-						@if (!message.IsPlayer)
-						{
-							<div class="author">@NpcName</div>
-						}
-						<div class="message-content">
-							<span class="text">@message.Text</span>
-						</div>
-					</div>
-				}
-			</div>
-			<div class="options-container">
-				<div class="options-label">Choisissez une réponse:</div>
-				<div class="options-list">
-					@foreach (var option in CurrentOptions)
+		<div class="messages">
+			@foreach (var entry in _entries)
+			{
+				<div class="entry @(entry.IsSystem ? "system" : "")">
+					@if (!entry.IsSystem)
 					{
-						<button class="dialog-option" @onclick=@(() => SelectOption(option))>
-							<span class="option-text">@option.Text</span>
-						</button>
+						<span class="author">@entry.Author:</span>
 					}
+					<span class="message">@entry.Message</span>
 				</div>
-			</div>
+			}
 		</div>
+		@if (IsOpen)
+		{
+			<div class="input-container">
+				<TextEntry @ref="_inputBox" Value="@_currentMessage" onsubmit=@SendMessage></TextEntry>
+			</div>
+		}
 	</div>
 </root>
 
 @code
 {
-	[Property] public string NpcName { get; set; } = "NPC";
-	[Property] public bool IsVisible { get; set; } = false;
+	[Property] public bool IsOpen { get; set; } = false;
 	
-	public List<ChatMessage> Messages { get; set; } = new();
-	public List<DialogOption> CurrentOptions { get; set; } = new();
-	
-	private NpcProfile currentNpc;
-	
-	public class ChatMessage
+	public class ChatEntry
 	{
-		public string Text { get; set; }
-		public bool IsPlayer { get; set; }
+		public string Author { get; set; }
+		public string Message { get; set; }
+		public bool IsSystem { get; set; }
+		public RealTimeSince TimeSinceAdded { get; set; }
 	}
 	
-	public class DialogOption
-	{
-		public string Text { get; set; }
-		public System.Action OnSelect { get; set; }
-	}
+	private readonly List<ChatEntry> _entries = [];
+	private string _currentMessage = "";
+	private TextEntry _inputBox;
+	private const int MaxMessages = 50;
 	
-	public void Initialize(NpcProfile npc)
+	protected override void OnAwake()
 	{
-		currentNpc = npc;
-		NpcName = npc?.Name ?? "Unknown";
-		Messages.Clear();
-		
-		var greeting = "Bonjour! Comment puis-je vous aider?";
-		Messages.Add(new ChatMessage 
-		{ 
-			Text = greeting, 
-			IsPlayer = false 
-		});
-		
-		if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
-		{
-			ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), greeting, false );
-		}
-		
-		UpdateOptions();
-	}
-	
-	public void OpenChat(NpcProfile npc)
-	{
-		Initialize(npc);
-		IsVisible = true;
-	}
-	
-	public void CloseChat()
-	{
-		IsVisible = false;
-	}
-	
-	public void Toggle()
-	{
-		IsVisible = !IsVisible;
+		// Chat initialization
 	}
 	
 	protected override void OnUpdate()
 	{
-		if ( IsVisible && Input.Pressed( "menu" ) )
+		if (!IsOpen && Input.Pressed("chat"))
 		{
-			CloseChat();
+			Open();
+		}
+		else if (IsOpen && Input.EscapePressed )
+		{
+			Close();
+		}
+
+		if (IsOpen && _inputBox.IsValid())
+		{
+			_inputBox.Focus();
+		}
+
+		while (_entries.Count > MaxMessages)
+		{
+			_entries.RemoveAt(0);
 		}
 	}
 	
-	private void SelectOption(DialogOption option)
+	public void Open()
 	{
-		Messages.Add(new ChatMessage 
-		{ 
-			Text = option.Text, 
-			IsPlayer = true 
-		});
-		
-		if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
-		{
-			ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), option.Text, true );
-		}
-		
-		option.OnSelect?.Invoke();
-		
-		UpdateOptions();
+		IsOpen = true;
 	}
 	
-	private void UpdateOptions()
+	public void Close()
 	{
-		CurrentOptions.Clear();
-		
-		CurrentOptions.Add(new DialogOption
+		IsOpen = false;
+		_currentMessage = "";
+		if (_inputBox != null)
 		{
-			Text = "Qui êtes-vous?",
-			OnSelect = () =>
-			{
-				var response = $"Je suis {NpcName}. Je vis dans cette ville depuis longtemps.";
-				Messages.Add(new ChatMessage
-				{
-					Text = response,
-					IsPlayer = false
-				});
-				
-				if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
-				{
-					ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), response, false );
-				}
-			}
-		});
+			_inputBox.Text = "";
+		}
+	}
+	
+	private void SendMessage()
+	{
+		if (_inputBox == null) return;
 		
-		CurrentOptions.Add(new DialogOption
+		var message = _inputBox.Text;
+		if (string.IsNullOrWhiteSpace(message))
 		{
-			Text = "Que savez-vous sur le culte?",
-			OnSelect = () =>
-			{
-				var response = "Le culte? Je... je ne sais pas de quoi vous parlez.";
-				Messages.Add(new ChatMessage
-				{
-					Text = response,
-					IsPlayer = false
-				});
-				
-				if ( ChatManager.Instance.IsValid() && currentNpc.IsValid() )
-				{
-					ChatManager.Instance.SaveMessage( currentNpc.GameObject.Id.ToString(), response, false );
-				}
-			}
-		});
+			Close();
+			return;
+		}
 		
-		CurrentOptions.Add(new DialogOption
+		AddMessage("Player", message);
+		_inputBox.Text = "";
+		_currentMessage = "";
+		_inputBox?.Focus();
+	}
+	
+	public void AddMessage(string author, string message)
+	{
+		_entries.Add(new ChatEntry
 		{
-			Text = "Au revoir",
-			OnSelect = () => CloseChat()
+			Author = author,
+			Message = message,
+			IsSystem = false,
+			TimeSinceAdded = 0
 		});
 	}
 	
 	protected override int BuildHash() 
-		=> System.HashCode.Combine(IsVisible, Messages.Count, CurrentOptions.Count);
+		=> System.HashCode.Combine(IsOpen, _entries.Count, _currentMessage);
 }
