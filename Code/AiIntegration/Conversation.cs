@@ -47,7 +47,7 @@ public class Conversation
 		conversation.Add( message );
 		ConversationUpdated?.Invoke( identifier );
 		
-		var response = await _httpBrain.RequestToIa( conversation );
+		var response = await _httpBrain.RequestToAi( conversation );
 		var messageResponse = new Message()
 		{
 			Role = "assistant",
@@ -111,6 +111,6 @@ public class Conversation
 			          Reste dans le personnage, et écris cette synthèse comme si elle venait de lui/elle. Elle peut prendre la forme d’un journal intime, d’une note mentale ou d’un souvenir.
 			          """
 		});
-		return await _httpBrain.RequestToIa( conversation );
+		return await _httpBrain.RequestToAi( conversation );
 	}
 }

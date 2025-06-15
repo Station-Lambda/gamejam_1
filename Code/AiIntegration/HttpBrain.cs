@@ -1,68 +1,89 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Sandbox;
 
 namespace Sandbox.AiIntegration;
 
+/// <summary>
+/// Represents a conversation message with role and content
+/// </summary>
 public struct Message
 {
+	/// <summary>
+	/// Role: "user", "assistant", or "system"
+	/// </summary>
 	public string Role { get; set; }
-	public string Content { get; set; }
 	
-	// refusal: null,
-	// reasoning: null
+	/// <summary>
+	/// Message content text
+	/// </summary>
+	public string Content { get; set; }
 }
 
+/// <summary>
+/// AI response choice from API
+/// </summary>
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public struct Choice
 {
-	// logprobs: null,
 	public string finish_reason { get; set; }
 	public string native_finish_reason { get; set; }
 	public int Index { get; set; }
-	
 	public Message Message { get; set; }
 }
 
+/// <summary>
+/// Request body for AI API
+/// </summary>
 public struct HttpBody
 {
 	public string Model { get; set; }
 	public List<Message> Messages { get; set; }
 }
 
+/// <summary>
+/// Response from AI API
+/// </summary>
 public struct HttpResponse
 {
 	public string Id { get; set; }
 	public string Provider { get; set; }
 	public string Model { get; set; }
-	
 	public string Object { get; set; }
 	public int Created { get; set; }
 	public List<Choice> Choices { get; set; }
 }
 
+/// <summary>
+/// Handles HTTP communication with AI API
+/// </summary>
 public class HttpBrain
 {
-	private const string API_KEY = "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";
+	private const string ApiKey = "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";
+	private const string ApiUrl = "https://openrouter.ai/api/v1/chat/completions";
+	private const string Model = "deepseek/deepseek-chat-v3-0324:free";
 
-	public async Task<string> RequestToIa(List<Message> messages )
+	/// <summary>
+	/// Sends messages to AI and returns response
+	/// </summary>
+	public async Task<string> RequestToAi(List<Message> messages )
 	{
-		var headers = new Dictionary<string, string>();
-		headers.Add("Authorization", "Bearer " + API_KEY);
+		var headers = new Dictionary<string, string>
+		{
+			{ "Authorization", $"Bearer {ApiKey}" }
+		};
+
+		var httpBody = new HttpBody
+		{
+			Model = Model,
+			Messages = messages
+		};
 		
-		var httpBody = new HttpBody();
-		httpBody.Model = "deepseek/deepseek-chat-v3-0324:free";
-		httpBody.Messages = messages;
+		var response = await Http.RequestJsonAsync<HttpResponse>( ApiUrl, "POST", Http.CreateJsonContent( httpBody ), headers);
 		
-		var response = await Http.RequestJsonAsync<HttpResponse>( "https://openrouter.ai/api/v1/chat/completions", "POST", Http.CreateJsonContent( httpBody ), headers);
+		if ( response.Choices == null || response.Choices.Count == 0 )
+			return string.Empty;
 		
-		var choice =  response.Choices[0];
-		var message = choice.Message;
-		
-		Log.Info(" Message : " + message.Content);
-		
+		var message = response.Choices[0].Message;
 		return message.Content;
 	}
 }
