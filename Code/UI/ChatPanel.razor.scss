@@ -84,23 +84,11 @@ ChatPanel {
 	.chat-messages {
 		flex: 1;
 		padding: 20px;
-		overflow-y: auto;
+		overflow: scroll;
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
 		
-		&::-webkit-scrollbar {
-			width: 8px;
-		}
-		
-		&::-webkit-scrollbar-track {
-			background: #222;
-		}
-		
-		&::-webkit-scrollbar-thumb {
-			background: #444;
-			border-radius: 4px;
-		}
 		
 		.message {
 			padding: 10px 15px;
@@ -137,7 +125,7 @@ ChatPanel {
 		flex-direction: column;
 		gap: 8px;
 		max-height: 200px;
-		overflow-y: auto;
+		overflow: scroll;
 		
 		.dialog-option {
 			padding: 12px 16px;
