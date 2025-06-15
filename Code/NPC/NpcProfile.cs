@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Sandbox.AiIntegration;
 
 namespace Sandbox;
 
@@ -23,7 +22,6 @@ public sealed class NpcProfile : Component
 	
 	[Property] public string CurrentEmotion { get; set; } = "";
 	
-	private Conversation _conversation = new Conversation();
 	
 	protected override void OnStart()
 	{
