@@ -291,7 +291,7 @@
       "__version": 1,
       "Flags": 0,
       "Name": "Player",
-      "Position": "94.84662,-37.49765,1.954742",
+      "Position": "-188.4269,-37.49765,1.954742",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -468,7 +468,7 @@
           "__version": 1,
           "Flags": 0,
           "Name": "Body",
-          "Position": "-151.0799,0,0",
+          "Position": "0,0,0",
           "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
           "Tags": "",
@@ -589,11 +589,11 @@
       ]
     },
     {
-      "__guid": "d38174bb-98cf-4420-8593-efa388f0c22f",
+      "__guid": "0e8d9171-4837-47ce-a1a2-fdbbccceaada",
       "__version": 1,
       "Flags": 0,
       "Name": "Npc",
-      "Position": "0.4273224,-37.49765,1.954742",
+      "Position": "21.01722,-145.23,154.9376",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
@@ -605,7 +605,7 @@
       "Components": [
         {
           "__type": "Sandbox.PlayerController",
-          "__guid": "f57345d2-8ee2-482d-a187-c1371eaccee2",
+          "__guid": "65ee5d38-d51f-4de8-bd36-d2399a0e9be5",
           "__enabled": true,
           "AccelerationTime": 0,
           "AimStrengthBody": 1,
@@ -615,8 +615,8 @@
           "AltMoveButton": "run",
           "Body": {
             "_type": "component",
-            "component_id": "13133df0-70fe-43ee-89f4-3e0ac5932100",
-            "go": "d38174bb-98cf-4420-8593-efa388f0c22f",
+            "component_id": "4a16f901-0527-455a-b758-c693312b7434",
+            "go": "0e8d9171-4837-47ce-a1a2-fdbbccceaada",
             "component_type": "Rigidbody"
           },
           "BodyCollisionTags": null,
@@ -627,7 +627,7 @@
           "CameraOffset": "256,0,12",
           "ColliderObject": {
             "_type": "gameobject",
-            "go": "975eaa49-bde0-4be2-90ff-8c31949c4742"
+            "go": "7ffe9d7c-ba34-44b8-92c6-9010e622f84f"
           },
           "DeaccelerationTime": 0,
           "DuckedHeight": 36,
@@ -653,8 +653,8 @@
           "ReachLength": 130,
           "Renderer": {
             "_type": "component",
-            "component_id": "dd67e80f-a294-4750-b693-a083b6a14227",
-            "go": "ebac5c94-871c-4679-9753-904e48ceac44",
+            "component_id": "b0425173-65cb-41a6-a113-84197aebff70",
+            "go": "6895e423-8bc2-411e-ae8d-e686c8312fc0",
             "component_type": "SkinnedModelRenderer"
           },
           "RotateWithGround": true,
@@ -676,7 +676,7 @@
         },
         {
           "__type": "Sandbox.Rigidbody",
-          "__guid": "13133df0-70fe-43ee-89f4-3e0ac5932100",
+          "__guid": "4a16f901-0527-455a-b758-c693312b7434",
           "__enabled": true,
           "AngularDamping": 1,
           "Gravity": true,
@@ -704,7 +704,7 @@
         },
         {
           "__type": "Sandbox.Movement.MoveModeWalk",
-          "__guid": "f76a7555-13cb-493a-b18a-21a02cc7cd3a",
+          "__guid": "8b0721c1-c95c-4836-9bca-0987599bfbfd",
           "__enabled": true,
           "GroundAngle": 45,
           "OnComponentDestroy": null,
@@ -719,7 +719,7 @@
         },
         {
           "__type": "Sandbox.Movement.MoveModeSwim",
-          "__guid": "b0bda46a-1d4d-4a1b-a46c-805325b81570",
+          "__guid": "a5444b20-2fa3-45e1-b920-e6c708e79c13",
           "__enabled": true,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -732,7 +732,7 @@
         },
         {
           "__type": "Sandbox.Movement.MoveModeLadder",
-          "__guid": "0615fcbf-dd00-4575-bb5a-d5e55038cab8",
+          "__guid": "933436f6-dd91-4854-a725-fbe2b6dfea38",
           "__enabled": true,
           "ClimbableTags": "ladder",
           "OnComponentDestroy": null,
@@ -745,33 +745,10 @@
           "Speed": 1
         },
         {
-          "__type": "Sandbox.Dresser",
-          "__guid": "3c9326fb-5849-4380-a44d-a0b0d85baf30",
-          "__enabled": true,
-          "ApplyHeightScale": true,
-          "BodyTarget": {
-            "_type": "component",
-            "component_id": "dd67e80f-a294-4750-b693-a083b6a14227",
-            "go": "ebac5c94-871c-4679-9753-904e48ceac44",
-            "component_type": "SkinnedModelRenderer"
-          },
-          "Clothing": [],
-          "ManualAge": 0.5,
-          "ManualHeight": 0.5,
-          "ManualTint": 0.5,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "Source": "Manual",
-          "WorkshopItems": []
-        },
-        {
           "__type": "Sandbox.AiCharacter",
-          "__guid": "e9012bfc-bb44-4229-9641-a10651652700",
+          "__guid": "747a26f1-6411-4994-92eb-5c3d1e4520d5",
           "__enabled": true,
+          "CharacterController": null,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -783,12 +760,12 @@
       ],
       "Children": [
         {
-          "__guid": "ebac5c94-871c-4679-9753-904e48ceac44",
+          "__guid": "6895e423-8bc2-411e-ae8d-e686c8312fc0",
           "__version": 1,
           "Flags": 0,
           "Name": "Body",
-          "Position": "96.11893,-61.66364,0",
-          "Rotation": "0,0,0.7071067,0.7071068",
+          "Position": "0,0,0",
+          "Rotation": "0,0,0,1",
           "Scale": "1,1,1",
           "Tags": "",
           "Enabled": true,
@@ -799,14 +776,14 @@
           "Components": [
             {
               "__type": "Sandbox.SkinnedModelRenderer",
-              "__guid": "dd67e80f-a294-4750-b693-a083b6a14227",
+              "__guid": "b0425173-65cb-41a6-a113-84197aebff70",
               "__enabled": true,
               "AnimationGraph": null,
               "BodyGroups": 341,
               "BoneMergeTarget": null,
               "CreateAttachments": false,
               "CreateBoneObjects": false,
-              "MaterialGroup": "default",
+              "MaterialGroup": null,
               "MaterialOverride": null,
               "Model": "models/citizen/citizen.vmdl",
               "Morphs": {},
@@ -843,7 +820,7 @@
           "Children": []
         },
         {
-          "__guid": "975eaa49-bde0-4be2-90ff-8c31949c4742",
+          "__guid": "7ffe9d7c-ba34-44b8-92c6-9010e622f84f",
           "__version": 1,
           "Flags": 1,
           "Name": "Colliders",
@@ -859,7 +836,7 @@
           "Components": [
             {
               "__type": "Sandbox.CapsuleCollider",
-              "__guid": "edf9dffe-109f-4d72-9131-7cbf2002a559",
+              "__guid": "def3ddb5-cbd6-4a31-91ce-a3575ef6c301",
               "__enabled": true,
               "End": "0,0,45.05097",
               "Friction": 0,
@@ -882,7 +859,7 @@
             },
             {
               "__type": "Sandbox.BoxCollider",
-              "__guid": "9173cb78-203b-49b5-b184-5a2a3a9385ca",
+              "__guid": "857d1d7c-96ee-465c-abe6-d720e63a0085",
               "__enabled": true,
               "Center": "0,0,18",
               "Friction": 0,

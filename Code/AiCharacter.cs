@@ -1,16 +1,19 @@
+using System;
 using Sandbox.BehaviourTree;
 
 namespace Sandbox;
 
 public class AiCharacter : Component
 {
-	/// <summary>
-	/// Affiche le debug du behaviour tree au-dessus du personnage.
-	/// </summary>
 	[Property] public bool ShowDebug { get; set; } = true;
-	
+	[Property] public float PatrolRadius { get; set; } = 500f;
+	[Property] public float MoveSpeed { get; set; } = 100f;
+	[Property] public float TargetThreshold { get; set; } = 5f;
+
 	private Node _behaviourTree;
 	private BehaviourTreeContext _context;
+	private Vector3 _targetPosition;
+	private bool _hasTarget;
 
 	protected override void OnStart()
 	{
@@ -20,33 +23,86 @@ public class AiCharacter : Component
 
 	protected override void OnUpdate()
 	{
-		// Exécuter l'arbre de comportement
-		var status = _behaviourTree.Execute( _context );
-		
-		// Afficher le debug si activé
+		_behaviourTree.Execute( _context );
+
 		if ( ShowDebug && _context.LastExecutedNode != null )
 		{
-			var debugText = $"{_context.CurrentPath}\nStatus: {_context.LastNodeStatus}";
-			var tr = Transform.World;
-			tr.Position += Vector3.Up * 100;
-			tr.Rotation = tr.Rotation.RotateAroundAxis( Vector3.Forward, 90 );
-			tr.Rotation = tr.Rotation.RotateAroundAxis( Vector3.Left, 90 );
-			Gizmo.Draw.WorldText( debugText, tr );
+			ShowDebugInfo();
 		}
 	}
-	
+
+	private void ShowDebugInfo()
+	{
+		var debugText = $"{_context.CurrentPath}\nStatus: {_context.LastNodeStatus}";
+		var transform = Transform.World;
+		transform.Position += Vector3.Up * 100;
+		transform.Rotation = transform.Rotation.RotateAroundAxis( Vector3.Forward, 90 );
+		transform.Rotation = transform.Rotation.RotateAroundAxis( Vector3.Left, 90 );
+		Gizmo.Draw.WorldText( debugText, transform );
+	}
+
 	private Node BuildBehaviourTree()
 	{
 		var root = new SelectorNode();
-        
-		root.AddChild( new ActionNode(BaseAction));
-		
+
+		var findNewTargetSequence = new SequenceNode();
+		findNewTargetSequence.AddChild( new ConditionNode( ShouldFindNewTarget ) );
+		findNewTargetSequence.AddChild( new ActionNode( FindNewTargetPosition ) );
+
+		var moveToTargetSequence = new SequenceNode();
+		moveToTargetSequence.AddChild( new ConditionNode( HasTarget ) );
+		moveToTargetSequence.AddChild( new ActionNode( MoveToTarget ) );
+
+		root.AddChild( findNewTargetSequence );
+		root.AddChild( moveToTargetSequence );
+
 		return root;
 	}
 
-	private NodeStatus BaseAction()
+	private bool ShouldFindNewTarget()
 	{
-		Log.Info( "Ok" );
+		return !_hasTarget || IsAtTarget();
+	}
+
+	private bool IsAtTarget()
+	{
+		if ( !_hasTarget )
+			return false;
+
+		return _targetPosition.Distance( WorldPosition ) <= TargetThreshold;
+	}
+
+	private bool HasTarget()
+	{
+		return _hasTarget;
+	}
+
+	private NodeStatus FindNewTargetPosition()
+	{
+		var randomOffset = new Vector3(
+			Random.Shared.Float( -PatrolRadius, PatrolRadius ),
+			Random.Shared.Float( -PatrolRadius, PatrolRadius ),
+			0
+		);
+
+		_targetPosition = WorldPosition + randomOffset;
+		_hasTarget = true;
+
 		return NodeStatus.Success;
+	}
+
+	private NodeStatus MoveToTarget()
+	{
+		var direction = (_targetPosition - WorldPosition).Normal;
+		var movement = direction * MoveSpeed * Time.Delta;
+		WorldPosition += movement;
+
+		if ( IsAtTarget() )
+		{
+			_hasTarget = false;
+			return NodeStatus.Success;
+		}
+
+		return NodeStatus.Running;
 	}
 }
