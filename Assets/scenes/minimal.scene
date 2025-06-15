@@ -21,7 +21,7 @@
           "__guid": "d2775202-9a7d-42d3-a72d-bc39cfff896b",
           "__enabled": true,
           "Author": null,
-          "Changes": null,
+          "Changes": "",
           "Description": "",
           "Group": null,
           "OnComponentDestroy": null,
@@ -294,7 +294,7 @@
       "Position": "-188.4269,-37.49765,1.954742",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
-      "Tags": "",
+      "Tags": "player",
       "Enabled": true,
       "NetworkMode": 2,
       "NetworkInterpolation": true,
@@ -594,6 +594,23 @@
       ]
     },
     {
+      "__guid": "8f7a2e4b-6c3d-4a5e-9b2f-1d8c7e5f3a9b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "ChatManager",
+      "Position": "0,0,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [],
+      "Children": []
+    },
+    {
       "__guid": "0e8d9171-4837-47ce-a1a2-fdbbccceaada",
       "__version": 1,
       "__Prefab": "prefabs/npc.prefab",
@@ -620,6 +637,53 @@
         "a121ecd9-8490-4d4a-89d6-17874ca95609": "93023704-4262-416a-87c0-ccb62a002d3e",
         "1f19c173-6410-4f57-bde1-a227104b5a67": "2a2ca88f-98a7-4a01-83db-f2911949f0d1"
       }
+    },
+    {
+      "__guid": "1c80cc94-44a4-48ae-b6f5-c264d76f29ab",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Chat",
+      "Position": "-41.80642,-268.9567,287.636",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.ScreenPanel",
+          "__guid": "2b5af1f2-2d98-4dca-8e3c-384fac1e2757",
+          "__enabled": true,
+          "AutoScreenScale": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Opacity": 1,
+          "Scale": 1,
+          "ScaleStrategy": "ConsistentHeight",
+          "TargetCamera": null,
+          "ZIndex": 100
+        },
+        {
+          "__type": "Sandbox.ChatPanel",
+          "__guid": "6b450c35-ea09-4b7b-aeb2-5dc297c1f55b",
+          "__enabled": true,
+          "IsOpen": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        }
+      ],
+      "Children": []
     }
   ],
   "SceneProperties": {

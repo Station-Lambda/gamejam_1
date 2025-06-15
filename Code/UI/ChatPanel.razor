@@ -1,0 +1,118 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root class="@(IsOpen ? "open" : "")">
+	<div class="chat-container">
+		<div class="messages">
+			@foreach (var entry in _entries)
+			{
+				<div class="entry @(entry.IsSystem ? "system" : "")">
+					@if (!entry.IsSystem)
+					{
+						<span class="author">@entry.Author:</span>
+					}
+					<span class="message">@entry.Message</span>
+				</div>
+			}
+		</div>
+		@if (IsOpen)
+		{
+			<div class="input-container">
+				<TextEntry @ref="_inputBox" Value="@_currentMessage" onsubmit=@SendMessage></TextEntry>
+			</div>
+		}
+	</div>
+</root>
+
+@code
+{
+	[Property] public bool IsOpen { get; set; } = false;
+	
+	public class ChatEntry
+	{
+		public string Author { get; set; }
+		public string Message { get; set; }
+		public bool IsSystem { get; set; }
+		public RealTimeSince TimeSinceAdded { get; set; }
+	}
+	
+	private readonly List<ChatEntry> _entries = [];
+	private string _currentMessage = "";
+	private TextEntry _inputBox;
+	private const int MaxMessages = 50;
+	
+	protected override void OnAwake()
+	{
+		// Chat initialization
+	}
+	
+	protected override void OnUpdate()
+	{
+		if (!IsOpen && Input.Pressed("chat"))
+		{
+			Open();
+		}
+		else if (IsOpen && Input.EscapePressed )
+		{
+			Close();
+		}
+
+		if (IsOpen && _inputBox.IsValid())
+		{
+			_inputBox.Focus();
+		}
+
+		while (_entries.Count > MaxMessages)
+		{
+			_entries.RemoveAt(0);
+		}
+	}
+	
+	public void Open()
+	{
+		IsOpen = true;
+	}
+	
+	public void Close()
+	{
+		IsOpen = false;
+		_currentMessage = "";
+		if (_inputBox != null)
+		{
+			_inputBox.Text = "";
+		}
+	}
+	
+	private void SendMessage()
+	{
+		if (_inputBox == null) return;
+		
+		var message = _inputBox.Text;
+		if (string.IsNullOrWhiteSpace(message))
+		{
+			Close();
+			return;
+		}
+		
+		AddMessage("Player", message);
+		_inputBox.Text = "";
+		_currentMessage = "";
+		_inputBox?.Focus();
+	}
+	
+	public void AddMessage(string author, string message)
+	{
+		_entries.Add(new ChatEntry
+		{
+			Author = author,
+			Message = message,
+			IsSystem = false,
+			TimeSinceAdded = 0
+		});
+	}
+	
+	protected override int BuildHash() 
+		=> System.HashCode.Combine(IsOpen, _entries.Count, _currentMessage);
+}
