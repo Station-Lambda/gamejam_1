@@ -1,0 +1,26 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+    <div class="eye">
+        <svg class="eye-logo" src="materials/eye2.svg"></svg>
+    </div>
+	<div class="container">
+        <div class="bottom-container">
+            <div class="loading-bar">LOADING</div>
+        </div>
+    </div>
+</root>
+
+@code
+{
+    protected async override void OnStart()
+    {
+        await GameTask.Delay(5000);
+        Scene.LoadFromFile("scenes/main_menu.scene");
+    }
+
+	protected override int BuildHash() => System.HashCode.Combine( Time.Now );
+}

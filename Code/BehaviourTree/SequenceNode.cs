@@ -14,27 +14,25 @@ public class SequenceNode : CompositeNode
 	/// <returns>Success si tous les enfants réussissent, Running si un enfant est en cours, Failure si un enfant échoue.</returns>
 	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
-		context.LastExecutedNode = this;
-		context.CurrentPath = "SequenceNode";
+		var previousPath = context.CurrentPath;
+		UpdateContext( context );
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SequenceNode: Starting from child {_currentChild}/{Children.Count}" );
 		context.CurrentDepth++;
 		
 		while ( _currentChild < Children.Count )
 		{
 			var status = Children[_currentChild].Execute( context );
-			Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SequenceNode: Child {_currentChild} returned {status}" );
+			context.LastNodeStatus = status;
 
 			switch ( status )
 			{
 				case NodeStatus.Running:
 					context.CurrentDepth--;
-					context.LastNodeStatus = NodeStatus.Running;
 					return NodeStatus.Running;
 				case NodeStatus.Failure:
 					Reset();
 					context.CurrentDepth--;
-					context.LastNodeStatus = NodeStatus.Failure;
+					context.CurrentPath = previousPath;
 					return NodeStatus.Failure;
 				case NodeStatus.Success:
 				case NodeStatus.Invalid:
@@ -44,10 +42,9 @@ public class SequenceNode : CompositeNode
 			}
 		}
 
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}SequenceNode: All children succeeded" );
 		Reset();
 		context.CurrentDepth--;
-		context.LastNodeStatus = NodeStatus.Success;
+		context.CurrentPath = previousPath;
 		return NodeStatus.Success;
 	}
 

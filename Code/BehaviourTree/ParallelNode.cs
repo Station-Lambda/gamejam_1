@@ -33,7 +33,6 @@ public class ParallelNode( ParallelPolicy successPolicy = ParallelPolicy.Require
 		context.LastExecutedNode = this;
 		context.CurrentPath = "ParallelNode";
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ParallelNode: Executing {Children.Count} children" );
 		context.CurrentDepth++;
 		
 		var successCount = 0;
@@ -78,7 +77,6 @@ public class ParallelNode( ParallelPolicy successPolicy = ParallelPolicy.Require
 		else
 			result = NodeStatus.Failure;
 
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ParallelNode: S:{successCount} F:{failureCount} R:{runningCount} -> {result}" );
 		context.LastNodeStatus = result;
 		return result;
 	}

@@ -28,7 +28,6 @@ public class InverterNode( Node child ) : Node
 		};
 		
 		context.LastNodeStatus = invertedStatus;
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}InverterNode: {status} -> {invertedStatus}" );
 		return invertedStatus;
 	}
 

@@ -18,7 +18,6 @@ public class RepeatNode( Node child, int repeatCount = -1 ) : Node
 		context.LastExecutedNode = this;
 		context.CurrentPath = "RepeatNode";
 		
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RepeatNode: Repeat {_currentCount}/{(repeatCount == -1 ? "∞" : repeatCount.ToString())}" );
 		context.CurrentDepth++;
 
 		// Répétition infinie
@@ -46,7 +45,6 @@ public class RepeatNode( Node child, int repeatCount = -1 ) : Node
 		}
 
 		// Toutes les répétitions sont terminées
-		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RepeatNode: Completed all {repeatCount} repetitions" );
 		_currentCount = 0;
 		context.CurrentDepth--;
 		context.LastNodeStatus = NodeStatus.Success;
