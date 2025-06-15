@@ -30,8 +30,9 @@ public class AiCharacter : Component
 			var debugText = $"{_context.CurrentPath}\nStatus: {_context.LastNodeStatus}";
 			Log.Info( debugText );
 			var tr = Transform.World;
-			tr.Position += Vector3.Up * 50;
+			tr.Position += Vector3.Up * 100;
 			tr.Rotation = tr.Rotation.RotateAroundAxis( Vector3.Forward, 90 );
+			tr.Rotation = tr.Rotation.RotateAroundAxis( Vector3.Left, 90 );
 			Gizmo.Draw.WorldText( debugText, tr );
 		}
 	}
