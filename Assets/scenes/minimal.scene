@@ -596,114 +596,30 @@
     {
       "__guid": "0e8d9171-4837-47ce-a1a2-fdbbccceaada",
       "__version": 1,
-      "Flags": 0,
-      "Name": "Npc",
-      "Position": "21.01722,-145.23,5.235977",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkInterpolation": true,
-      "NetworkOrphaned": 0,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "Sandbox.AiCharacter",
-          "__guid": "747a26f1-6411-4994-92eb-5c3d1e4520d5",
-          "__enabled": true,
-          "MaxWaitTime": 5,
-          "MinWaitTime": 1,
-          "MoveSpeed": 100,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "PatrolRadius": 500,
-          "ShowDebug": true,
-          "TargetThreshold": 5
-        }
-      ],
-      "Children": [
-        {
-          "__guid": "6895e423-8bc2-411e-ae8d-e686c8312fc0",
-          "__version": 1,
-          "Flags": 0,
-          "Name": "Body",
-          "Position": "0,0,0",
-          "Rotation": "0,0,0,1",
-          "Scale": "1,1,1",
-          "Tags": "",
-          "Enabled": true,
-          "NetworkMode": 2,
-          "NetworkInterpolation": true,
-          "NetworkOrphaned": 0,
-          "OwnerTransfer": 1,
-          "Components": [
-            {
-              "__type": "Sandbox.SkinnedModelRenderer",
-              "__guid": "b0425173-65cb-41a6-a113-84197aebff70",
-              "__enabled": true,
-              "AnimationGraph": null,
-              "BodyGroups": 341,
-              "BoneMergeTarget": null,
-              "CreateAttachments": false,
-              "CreateBoneObjects": false,
-              "MaterialGroup": null,
-              "MaterialOverride": null,
-              "Model": "models/citizen/citizen.vmdl",
-              "Morphs": {},
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "Parameters": {
-                "bools": {},
-                "ints": {},
-                "floats": {},
-                "vectors": {},
-                "rotations": {}
-              },
-              "PlaybackRate": 1,
-              "RenderOptions": {
-                "GameLayer": true,
-                "OverlayLayer": false,
-                "BloomLayer": false,
-                "AfterUILayer": false
-              },
-              "RenderType": "On",
-              "Sequence": {
-                "Name": null,
-                "Looping": true,
-                "Blending": false
-              },
-              "Tint": "1,1,1,1",
-              "UseAnimGraph": true
+      "__Prefab": "prefabs/npc.prefab",
+      "__PrefabInstancePatch": {
+        "AddedObjects": [],
+        "RemovedObjects": [],
+        "PropertyOverrides": [
+          {
+            "Target": {
+              "Type": "GameObject",
+              "IdValue": "4b3e23c3-2ccd-465b-8e8b-37b6fd75ee3d"
             },
-            {
-              "__type": "Sandbox.NpcProfile",
-              "__guid": "93023704-4262-416a-87c0-ccb62a002d3e",
-              "__enabled": true,
-              "CurrentEmotion": "",
-              "Gender": "Male",
-              "Memory": [],
-              "Name": "",
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "Traits": []
-            }
-          ],
-          "Children": []
-        }
-      ]
+            "Property": "Position",
+            "Value": "21.01722,-145.23,5.235977"
+          }
+        ],
+        "MovedObjects": []
+      },
+      "__PrefabIdToInstanceId": {
+        "4b3e23c3-2ccd-465b-8e8b-37b6fd75ee3d": "0e8d9171-4837-47ce-a1a2-fdbbccceaada",
+        "126843f0-558a-40f0-be93-82962030f41f": "747a26f1-6411-4994-92eb-5c3d1e4520d5",
+        "157d8c69-7270-4b4b-9d94-b06fc144e199": "6895e423-8bc2-411e-ae8d-e686c8312fc0",
+        "52906144-169f-4e61-9f95-eb0adc0df159": "b0425173-65cb-41a6-a113-84197aebff70",
+        "a121ecd9-8490-4d4a-89d6-17874ca95609": "93023704-4262-416a-87c0-ccb62a002d3e",
+        "1f19c173-6410-4f57-bde1-a227104b5a67": "2a2ca88f-98a7-4a01-83db-f2911949f0d1"
+      }
     }
   ],
   "SceneProperties": {
