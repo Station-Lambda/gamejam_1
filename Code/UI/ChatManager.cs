@@ -33,18 +33,25 @@ public sealed class ChatManager : Component
 	
 	protected override void OnUpdate()
 	{
-		if ( Input.Pressed( "chat" ) )
+		if ( ChatPanel.IsVisible )
 		{
-			if ( ChatPanel.IsVisible )
+			if ( Input.Pressed( "menu" ) || Input.Pressed( "chat" ) )
 			{
 				ChatPanel.CloseChat();
 			}
-			else
+		}
+		else
+		{
+			if ( Input.Pressed( "chat" ) )
 			{
 				var nearestNpc = FindNearestNpc();
 				if ( nearestNpc.IsValid() )
 				{
 					StartConversation( nearestNpc );
+				}
+				else
+				{
+					Log.Info( "Aucun NPC à proximité pour discuter." );
 				}
 			}
 		}

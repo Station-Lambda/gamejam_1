@@ -3,29 +3,42 @@
 @inherits PanelComponent
 @namespace Sandbox
 
-<root class="@(IsVisible ? "visible" : "hidden")">
-	<div class="chat-overlay" @onclick=@CloseChat></div>
-	<div class="chat-window">
+<root class="@(IsVisible ? "open" : "")">
+	<div class="chat-container">
 		<div class="chat-header">
-			<h3 class="npc-name">@NpcName</h3>
-			<button class="close-button" @onclick=@CloseChat>×</button>
+			<div class="npc-info">
+				<span class="chat-label">Conversation avec</span>
+				<h3 class="npc-name">@NpcName</h3>
+			</div>
+			<button class="close-button" @onclick=@CloseChat>
+				<span>ESC</span>
+			</button>
 		</div>
-		<div class="chat-content">
-			<div class="chat-messages">
+		<div class="chat-body">
+			<div class="messages-container">
 				@foreach (var message in Messages)
 				{
-					<div class="message @(message.IsPlayer ? "player" : "npc")">
-						<span class="text">@message.Text</span>
+					<div class="message-entry @(message.IsPlayer ? "player" : "npc")">
+						@if (!message.IsPlayer)
+						{
+							<div class="author">@NpcName</div>
+						}
+						<div class="message-content">
+							<span class="text">@message.Text</span>
+						</div>
 					</div>
 				}
 			</div>
-			<div class="chat-options">
-				@foreach (var option in CurrentOptions)
-				{
-					<button class="dialog-option" @onclick=@(() => SelectOption(option))>
-						@option.Text
-					</button>
-				}
+			<div class="options-container">
+				<div class="options-label">Choisissez une réponse:</div>
+				<div class="options-list">
+					@foreach (var option in CurrentOptions)
+					{
+						<button class="dialog-option" @onclick=@(() => SelectOption(option))>
+							<span class="option-text">@option.Text</span>
+						</button>
+					}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -88,6 +101,14 @@
 	public void Toggle()
 	{
 		IsVisible = !IsVisible;
+	}
+	
+	protected override void OnUpdate()
+	{
+		if ( IsVisible && Input.Pressed( "menu" ) )
+		{
+			CloseChat();
+		}
 	}
 	
 	private void SelectOption(DialogOption option)
