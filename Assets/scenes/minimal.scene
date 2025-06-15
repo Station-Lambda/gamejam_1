@@ -609,9 +609,16 @@
       "OwnerTransfer": 1,
       "Components": [
         {
-          "__type": "ChatManager",
+          "__type": "Sandbox.ChatManager",
           "__guid": "3e5b7f9a-2d4c-8e6f-1a7b-9c3d5e8f2a6b",
-          "__enabled": true
+          "__enabled": true,
+          "ChatPanel": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []

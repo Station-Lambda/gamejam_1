@@ -25,8 +25,9 @@ public sealed class ChatManager : Component
 		
 		if ( !ChatPanel.IsValid() )
 		{
-			var panelGo = Scene.CreateObject();
-			panelGo.Name = "ChatPanel";
+			var panelGo = GameObject;
+			var screenPanel = panelGo.Components.Create<ScreenPanel>();
+			screenPanel.ZIndex = 100;
 			ChatPanel = panelGo.Components.Create<ChatPanel>();
 		}
 	}
@@ -111,8 +112,8 @@ public sealed class ChatManager : Component
 			if ( !npc.IsValid() ) continue;
 			
 			var distance = Vector3.DistanceBetween( 
-				player.Transform.Position, 
-				npc.Transform.Position 
+				player.Transform.WorldPosition, 
+				npc.Transform.WorldPosition 
 			);
 			
 			if ( distance < nearestDistance )
