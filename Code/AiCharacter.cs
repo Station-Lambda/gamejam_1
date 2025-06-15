@@ -9,6 +9,8 @@ public class AiCharacter : Component
 	[Property] public float PatrolRadius { get; set; } = 500f;
 	[Property] public float MoveSpeed { get; set; } = 100f;
 	[Property] public float TargetThreshold { get; set; } = 5f;
+	[Property] public float MinWaitTime { get; set; } = 1f;
+	[Property] public float MaxWaitTime { get; set; } = 5f;
 
 	private Node _behaviourTree;
 	private BehaviourTreeContext _context;
@@ -46,12 +48,13 @@ public class AiCharacter : Component
 		var root = new SelectorNode();
 
 		var findNewTargetSequence = new SequenceNode();
-		findNewTargetSequence.AddChild( new ConditionNode( ShouldFindNewTarget ) );
-		findNewTargetSequence.AddChild( new ActionNode( FindNewTargetPosition ) );
+		findNewTargetSequence.AddChild( new ConditionNode( ShouldFindNewTarget, "NeedNewTarget?" ) );
+		findNewTargetSequence.AddChild( new ActionNode( FindNewTargetPosition, "FindNewTarget" ) );
+		findNewTargetSequence.AddChild( new TimerNode( GetRandomWaitTime ) );
 
 		var moveToTargetSequence = new SequenceNode();
-		moveToTargetSequence.AddChild( new ConditionNode( HasTarget ) );
-		moveToTargetSequence.AddChild( new ActionNode( MoveToTarget ) );
+		moveToTargetSequence.AddChild( new ConditionNode( HasTarget, "HasTarget?" ) );
+		moveToTargetSequence.AddChild( new ActionNode( MoveToTarget, "MoveToTarget" ) );
 
 		root.AddChild( findNewTargetSequence );
 		root.AddChild( moveToTargetSequence );
@@ -104,5 +107,10 @@ public class AiCharacter : Component
 		}
 
 		return NodeStatus.Running;
+	}
+
+	private float GetRandomWaitTime()
+	{
+		return Random.Shared.Float( MinWaitTime, MaxWaitTime );
 	}
 }
