@@ -8,7 +8,8 @@ public abstract class Node
 	/// <summary>
 	/// Le nom du nœud pour le debug.
 	/// </summary>
-	public virtual string Name => GetType().Name;
+	//public virtual string Name => GetType().Name;
+	public virtual string Name => "";
 	
 	/// <summary>
 	/// Exécute la logique du nœud et retourne son statut.

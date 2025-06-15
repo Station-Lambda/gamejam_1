@@ -13,7 +13,7 @@ public class ActionNode : Node
 	public ActionNode( Func<NodeStatus> action, string actionName = null )
 	{
 		_action = action;
-		_actionName = actionName ?? action.Method?.Name ?? "Action";
+		_actionName = actionName ?? "Action";
 	}
 	
 	public override string Name => _actionName;

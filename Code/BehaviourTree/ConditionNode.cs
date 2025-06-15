@@ -13,7 +13,7 @@ public class ConditionNode : Node
 	public ConditionNode( Func<bool> condition, string conditionName = null )
 	{
 		_condition = condition;
-		_conditionName = conditionName ?? condition.Method?.Name ?? "Condition";
+		_conditionName = conditionName ?? "Condition";
 	}
 	
 	public override string Name => _conditionName;
