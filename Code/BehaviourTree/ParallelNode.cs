@@ -28,15 +28,21 @@ public class ParallelNode( ParallelPolicy successPolicy = ParallelPolicy.Require
 	/// Exécute tous les nœuds enfants en parallèle.
 	/// </summary>
 	/// <returns>Success/Failure selon les politiques, Running si des enfants sont encore en cours.</returns>
-	public override NodeStatus Execute()
+	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
+		context.LastExecutedNode = this;
+		context.CurrentPath = "ParallelNode";
+		
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ParallelNode: Executing {Children.Count} children" );
+		context.CurrentDepth++;
+		
 		var successCount = 0;
 		var failureCount = 0;
 		var runningCount = 0;
 
 		foreach ( var child in Children )
 		{
-			var status = child.Execute();
+			var status = child.Execute( context );
 			
 			switch ( status )
 			{
@@ -52,25 +58,28 @@ public class ParallelNode( ParallelPolicy successPolicy = ParallelPolicy.Require
 			}
 		}
 
+		context.CurrentDepth--;
+		NodeStatus result;
+
 		// Vérifier les conditions d'échec en premier
 		if ( failurePolicy == ParallelPolicy.RequireOne && failureCount > 0 )
-			return NodeStatus.Failure;
-		
-		if ( failurePolicy == ParallelPolicy.RequireAll && failureCount == Children.Count )
-			return NodeStatus.Failure;
-
+			result = NodeStatus.Failure;
+		else if ( failurePolicy == ParallelPolicy.RequireAll && failureCount == Children.Count )
+			result = NodeStatus.Failure;
 		// Vérifier les conditions de succès
-		if ( successPolicy == ParallelPolicy.RequireOne && successCount > 0 )
-			return NodeStatus.Success;
-		
-		if ( successPolicy == ParallelPolicy.RequireAll && successCount == Children.Count )
-			return NodeStatus.Success;
-
+		else if ( successPolicy == ParallelPolicy.RequireOne && successCount > 0 )
+			result = NodeStatus.Success;
+		else if ( successPolicy == ParallelPolicy.RequireAll && successCount == Children.Count )
+			result = NodeStatus.Success;
 		// Si des enfants sont encore en cours
-		if ( runningCount > 0 )
-			return NodeStatus.Running;
-
+		else if ( runningCount > 0 )
+			result = NodeStatus.Running;
 		// Par défaut, échec si aucune condition n'est remplie
-		return NodeStatus.Failure;
+		else
+			result = NodeStatus.Failure;
+
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ParallelNode: S:{successCount} F:{failureCount} R:{runningCount} -> {result}" );
+		context.LastNodeStatus = result;
+		return result;
 	}
 }

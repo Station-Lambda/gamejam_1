@@ -15,25 +15,36 @@ public class RandomSelectorNode : CompositeNode
 	/// Exécute les nœuds enfants dans un ordre aléatoire jusqu'à ce qu'un réussisse.
 	/// </summary>
 	/// <returns>Success si un enfant réussit, Running si un enfant est en cours, Failure si tous échouent.</returns>
-	public override NodeStatus Execute()
+	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
+		context.LastExecutedNode = this;
+		context.CurrentPath = "RandomSelectorNode";
+		
 		if ( _needsShuffle )
 		{
 			ShuffleIndices();
 			_needsShuffle = false;
 		}
 
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RandomSelectorNode: Starting from index {_currentIndex}/{_shuffledIndices.Count}" );
+		context.CurrentDepth++;
+
 		while ( _currentIndex < _shuffledIndices.Count )
 		{
 			var childIndex = _shuffledIndices[_currentIndex];
-			var status = Children[childIndex].Execute();
+			var status = Children[childIndex].Execute( context );
+			Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RandomSelectorNode: Child {childIndex} returned {status}" );
 
 			switch ( status )
 			{
 				case NodeStatus.Running:
+					context.CurrentDepth--;
+					context.LastNodeStatus = NodeStatus.Running;
 					return NodeStatus.Running;
 				case NodeStatus.Success:
 					ResetState();
+					context.CurrentDepth--;
+					context.LastNodeStatus = NodeStatus.Success;
 					return NodeStatus.Success;
 				case NodeStatus.Failure:
 				case NodeStatus.Invalid:
@@ -43,7 +54,10 @@ public class RandomSelectorNode : CompositeNode
 			}
 		}
 
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RandomSelectorNode: All children failed" );
 		ResetState();
+		context.CurrentDepth--;
+		context.LastNodeStatus = NodeStatus.Failure;
 		return NodeStatus.Failure;
 	}
 

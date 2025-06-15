@@ -11,16 +11,25 @@ public class InverterNode( Node child ) : Node
 	/// Exécute le nœud enfant et inverse son résultat.
 	/// </summary>
 	/// <returns>Failure si l'enfant retourne Success, Success si l'enfant retourne Failure, Running sinon.</returns>
-	public override NodeStatus Execute()
+	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
-		var status = child.Execute();
+		context.LastExecutedNode = this;
+		context.CurrentPath = "InverterNode";
+		context.CurrentDepth++;
+		
+		var status = child.Execute( context );
+		context.CurrentDepth--;
 
-		return status switch
+		var invertedStatus = status switch
 		{
 			NodeStatus.Success => NodeStatus.Failure,
 			NodeStatus.Failure => NodeStatus.Success,
 			_ => status
 		};
+		
+		context.LastNodeStatus = invertedStatus;
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}InverterNode: {status} -> {invertedStatus}" );
+		return invertedStatus;
 	}
 
 	/// <summary>

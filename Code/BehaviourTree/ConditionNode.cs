@@ -12,8 +12,16 @@ public class ConditionNode( Func<bool> condition ) : Node
 	/// Exécute la condition et retourne Success si vrai, Failure sinon.
 	/// </summary>
 	/// <returns>Success si la condition est vraie, Failure sinon.</returns>
-	public override NodeStatus Execute()
+	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
-		return condition() ? NodeStatus.Success : NodeStatus.Failure;
+		context.LastExecutedNode = this;
+		context.CurrentPath = "ConditionNode";
+		
+		var result = condition();
+		var status = result ? NodeStatus.Success : NodeStatus.Failure;
+		context.LastNodeStatus = status;
+		
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ConditionNode: {result} -> {status}" );
+		return status;
 	}
 }

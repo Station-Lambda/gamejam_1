@@ -12,8 +12,15 @@ public class ActionNode( Func<NodeStatus> action ) : Node
 	/// Exécute l'action associée au nœud.
 	/// </summary>
 	/// <returns>Le statut retourné par l'action.</returns>
-	public override NodeStatus Execute()
+	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
-		return action();
+		context.LastExecutedNode = this;
+		context.CurrentPath = "ActionNode";
+		
+		var status = action();
+		context.LastNodeStatus = status;
+		
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}ActionNode: {status}" );
+		return status;
 	}
 }

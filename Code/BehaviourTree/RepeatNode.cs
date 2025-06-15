@@ -13,28 +13,43 @@ public class RepeatNode( Node child, int repeatCount = -1 ) : Node
 	/// Exécute le nœud enfant selon le nombre de répétitions spécifié.
 	/// </summary>
 	/// <returns>Running tant que les répétitions ne sont pas terminées, Success quand toutes les répétitions sont complétées.</returns>
-	public override NodeStatus Execute()
+	public override NodeStatus Execute( BehaviourTreeContext context )
 	{
+		context.LastExecutedNode = this;
+		context.CurrentPath = "RepeatNode";
+		
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RepeatNode: Repeat {_currentCount}/{(repeatCount == -1 ? "∞" : repeatCount.ToString())}" );
+		context.CurrentDepth++;
+
 		// Répétition infinie
 		if ( repeatCount == -1 )
 		{
-			child.Execute();
+			child.Execute( context );
+			context.CurrentDepth--;
+			context.LastNodeStatus = NodeStatus.Running;
 			return NodeStatus.Running;
 		}
 
 		// Répétition avec limite
 		while ( _currentCount < repeatCount )
 		{
-			var status = child.Execute();
+			var status = child.Execute( context );
 			
 			if ( status == NodeStatus.Running )
+			{
+				context.CurrentDepth--;
+				context.LastNodeStatus = NodeStatus.Running;
 				return NodeStatus.Running;
+			}
 			
 			_currentCount++;
 		}
 
 		// Toutes les répétitions sont terminées
+		Log.Info( $"{new string( ' ', context.CurrentDepth * 2 )}RepeatNode: Completed all {repeatCount} repetitions" );
 		_currentCount = 0;
+		context.CurrentDepth--;
+		context.LastNodeStatus = NodeStatus.Success;
 		return NodeStatus.Success;
 	}
 
